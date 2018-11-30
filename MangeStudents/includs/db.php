@@ -1,29 +1,40 @@
 <?php
+
 class Database
 {
-    function PDO ($dbName="Teaching",$dbUser="root",$dbPass="",$dbHost="localhost")
+    const DB_NAME = "Teaching";
+    const DB_USER = "root";
+    const DB_PASS = "";
+    const DB_HOST = "localhost";
+    private static $pdoOptions = [
+        PDO::MYSQL_ATTR_INIT_COMMAND => "set Names utf8"
+    ];
+
+
+    function connect($name, $host, $user, $password)
     {
-        try
-        {
-            $Connect= new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser,$dbPass,[PDO::MYSQL_ATTR_INIT_COMMAND=>"set Names utf8"]);
-            $Connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $Connect;
-        }catch(PDOException  $e)
-        {
+        try {
+
+            $connect = new PDO("mysql:host={$host};dbname={$name}", $user,$password, static::$pdoOptions);
+            $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $connect;
+
+        } catch(PDOException  $e) {
             echo "Error: Connect <p style='color: red'>".$e->getMessage()."</p>";
         }
     }
-    function getData($db,$query,$parm = []) {
+
+    private function db($db, $query, $params = []) {
         $stmt = $db->prepare($query);
-        $stmt->execute($parm);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $rows;
-}
-    function setData($db,$query,$parm = []) {
-        $stmt = $db->prepare($query);
-        $stmt->execute($parm);
-        $count = $stmt->rowCount();
-        return $count;
+        $stmt->execute($params);
+        return $stmt;
+    }
+
+    function getData($db, $query, $params = []) {
+        return $this->db($db, $query, $params)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function setData($db, $query, $params = []) {
+        return $this->db($db, $query, $params)->rowCount();
     }
 }
-?>
