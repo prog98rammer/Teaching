@@ -2,20 +2,20 @@
 
 class Database
 {
-    const DB_NAME = "Teaching";
-    const DB_USER = "root";
-    const DB_PASS = "";
-    const DB_HOST = "localhost";
+    private $name = "Teaching";
+    private $user = "root";
+    private $pass = "";
+    private $host = "localhost";
     private static $pdoOptions = [
         PDO::MYSQL_ATTR_INIT_COMMAND => "set Names utf8"
     ];
 
 
-    function connect($name, $host, $user, $password)
+    function function __construct()
     {
         try {
 
-            $connect = new PDO("mysql:host={$host};dbname={$name}", $user,$password, static::$pdoOptions);
+            $connect = new PDO("mysql:host={$this->host};dbname={$this->name}", $this->user, $this->password, static::$pdoOptions);
             $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $connect;
 
